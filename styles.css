@@ -1,0 +1,24 @@
+p {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+	text-align: center;
+}
+
+#contact {
+	font-weight:bold;
+}
+ 
+#position {
+  	font-weight: bold;
+    font-size: 14px;
+}
+
+#organization {
+    font-size: 12px;
+}
+
+#location {
+    font-size: 12px;
+}
