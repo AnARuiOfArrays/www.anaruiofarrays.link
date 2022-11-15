@@ -12,3 +12,4 @@ resource "aws_s3_bucket_website_configuration" "example" {
   error_document {
     key = "error.html"
   }
+}
