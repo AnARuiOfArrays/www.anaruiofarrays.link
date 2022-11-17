@@ -16,3 +16,11 @@ resource "aws_s3_bucket" "bucket_web" {
     allowed_origins = ["*"]
   }
 }
+
+resource "aws_s3_bucket_ownership_controls" "example" {
+  bucket = aws_s3_bucket.bucket_web.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
