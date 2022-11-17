@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "bucket_web" {
 
 
 resource "aws_s3_bucket_website_configuration" "bucket_web_config" {
-  bucket = aws_s3_bucket.bucket_primary.id
+  bucket = aws_s3_bucket.bucket_web.id
 
   index_document {
     suffix = "index.html"
@@ -27,15 +27,7 @@ resource "aws_s3_bucket_website_configuration" "bucket_web_config" {
 }
 
 resource "aws_s3_bucket_cors_configuration" "bucket_cors_config" {
-  bucket = aws_s3_bucket.bucket_primary.id
-
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["GET"]
-    allowed_origins = ["https://s3-website-test.hashicorp.com"]
-    expose_headers  = ["ETag"]
-    max_age_seconds = 3000
-  }
+  bucket = aws_s3_bucket.bucket_web.id
 
   cors_rule {
     allowed_methods = ["GET"]
