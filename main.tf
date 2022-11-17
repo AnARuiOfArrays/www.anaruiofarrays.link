@@ -13,7 +13,6 @@ resource "aws_s3_bucket" "bucket_web" {
   }
 }
 
-
 resource "aws_s3_bucket_website_configuration" "bucket_web_config" {
   bucket = aws_s3_bucket.bucket_web.id
 
