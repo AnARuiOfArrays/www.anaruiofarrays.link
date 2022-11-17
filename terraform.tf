@@ -4,7 +4,7 @@ terraform {
     organization = "bpt-crc"
 
     workspaces {
-      name = "learn-terraform-cloud"
+      name = "wwwanaruiofarrayslink"
     }
   }
 
