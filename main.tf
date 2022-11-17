@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_s3_bucket" "bucket_web" {
   bucket = "test.www.anaruiofarrays.link"
-  policy = file("web_bucket_policy.json")
+  #policy = file("web_bucket_policy.json")
 
   website {
     index_document = "index.html"
