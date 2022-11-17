@@ -9,7 +9,7 @@
                 "Service": "cloudfront.amazonaws.com"
             },
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::${aws_wdb_bucket_arn}/*",
+            "Resource": "arn:aws:s3:::test.www.anaruiofarrays.link/*",
             "Condition": {
                 "StringEquals": {
                     "AWS:SourceArn": "arn:aws:cloudfront::794697829473:distribution/E2AN2XKUUX8PSO"
