@@ -4,7 +4,6 @@ provider "aws" {
 
 resource "aws_s3_bucket" "bucket_web" {
   bucket = "test.www.anaruiofarrays.link"
-  acl    = "public-read"
   policy = file("web_bucket_policy.json")
 
   website {
