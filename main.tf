@@ -29,6 +29,7 @@ resource "aws_s3_bucket_object" "bucket_web_html" {
   bucket = aws_s3_bucket.bucket_web.id
   key    = "index.html"
   source = "index.html"
+  acl    = "public-read"
 
   # The filemd5() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the md5() function and the file() function:
@@ -40,6 +41,7 @@ resource "aws_s3_bucket_object" "bucket_web_css" {
   bucket = aws_s3_bucket.bucket_web.id
   key    = "styles.css"
   source = "styles.css"
+  acl    = "public-read"
 
   # The filemd5() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the md5() function and the file() function:
@@ -51,6 +53,8 @@ resource "aws_s3_bucket_object" "bucket_web_js" {
   bucket = aws_s3_bucket.bucket_web.id
   key    = "visitor_counter.js"
   source = "visitor_counter.js"
+  acl    = "public-read"
+
 
   # The filemd5() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the md5() function and the file() function:
