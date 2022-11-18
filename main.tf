@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "bucket_web" {
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "example" {
+resource "aws_s3_bucket_ownership_controls" "bucket_web_ownership" {
   bucket = aws_s3_bucket.bucket_web.id
 
   rule {
@@ -48,7 +48,7 @@ resource "aws_s3_bucket" "bucket_web_redirect" {
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "example" {
+resource "aws_s3_bucket_ownership_controls" "bucket_web_redirect_ownership" {
   bucket = aws_s3_bucket.bucket_web.id
 
   rule {
