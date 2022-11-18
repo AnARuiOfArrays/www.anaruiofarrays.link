@@ -49,7 +49,7 @@ resource "aws_s3_bucket" "bucket_web_redirect" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket_web_redirect_ownership" {
-  bucket = aws_s3_bucket.bucket_web.id
+  bucket = aws_s3_bucket.bucket_web_redirect.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
