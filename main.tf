@@ -5,11 +5,6 @@ provider "aws" {
 resource "aws_s3_bucket" "bucket_web" {
   bucket = "test.www.anaruiofarrays.link"
   #policy = file("web_bucket_policy.json")
-
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
-  }
   
   cors_rule {
     allowed_methods = ["GET"]
@@ -41,4 +36,22 @@ resource "aws_s3_bucket_object" "bucket_web_js" {
   bucket = aws_s3_bucket.bucket_web.id
   key    = "visitor_counter.js"
   source = "visitor_counter.js"
+}
+
+
+resource "aws_s3_bucket" "bucket_web_redirect" {
+  bucket = "test.anaruiofarrays.link"
+  #policy = file("web_bucket_policy.json")
+
+  website {
+    redirect_all_requests_to = aws_s3_bucket.bucket_web.id
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "example" {
+  bucket = aws_s3_bucket.bucket_web.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
 }
