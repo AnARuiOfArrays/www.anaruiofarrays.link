@@ -38,7 +38,6 @@ resource "aws_s3_bucket_object" "bucket_web_js" {
   source = "visitor_counter.js"
 }
 
-
 resource "aws_s3_bucket" "bucket_web_redirect" {
   bucket = "test.anaruiofarrays.link"
   #policy = file("web_bucket_policy.json")
