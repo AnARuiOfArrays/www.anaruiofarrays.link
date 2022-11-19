@@ -1,4 +1,8 @@
 variable "region" {
-  description = "AWS region"
-  default     = "us-east-1"
+}
+
+variable "web_bucket_name" {
+}
+
+variable "web_bucket_redirect_name " {
 }
