@@ -1,8 +1,8 @@
 variable "region" {
 }
 
-variable "web_bucket_name" {
+variable "bucket_web_name" {
 }
 
-variable "web_bucket_redirect_name " {
+variable "bucket_web_redirect_name " {
 }
