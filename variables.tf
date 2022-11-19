@@ -12,3 +12,8 @@ variable "bucket_web_redirect_name" {
   type = string
   default = ""
 }
+
+variable "acm_certificate_arn" {
+  type = string
+  default = ""
+}
