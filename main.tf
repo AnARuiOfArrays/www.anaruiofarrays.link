@@ -109,7 +109,7 @@ resource "aws_cloudfront_distribution" "bucket_web_distribution" {
 }
 
 #Create CloudFront distribution for redirect to web
-resource "aws_cloudfront_distribution" "bucket_web_distribution" {
+resource "aws_cloudfront_distribution" "bucket_web_redirect_distribution" {
   origin {
     domain_name              = aws_s3_bucket.bucket_web_redirect.bucket_regional_domain_name
     origin_id                = var.bucket_web_redirect_name
