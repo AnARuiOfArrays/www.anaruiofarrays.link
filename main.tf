@@ -169,7 +169,7 @@ resource "aws_route53_record" "record_domain" {
   }
 }
 
-resource "aws_route53_record" "record_domain" {
+resource "aws_route53_record" "record_subdomain_web" {
   zone_id = aws_route53_zone.primary.zone_id
   name    = var.subdomain_web
   type    = "A"
