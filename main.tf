@@ -12,6 +12,10 @@ resource "aws_s3_bucket" "bucket_web" {
     allowed_methods = ["GET"]
     allowed_origins = ["*"]
   }
+  
+    website {
+    index_document = "index.html"
+    }
 }
 
 #Set ownership controls for web bucket
