@@ -1,7 +1,7 @@
 { 
   "Statement": [
     {
-      "Sid": "ReadOnlyAccess,
+      "Sid": "S3ReadOnlyAccess",
       "Effect": "Allow",
       "Principal": "*",
       "Action": [ "s3:GetObject", "s3:ListBucket" ],
