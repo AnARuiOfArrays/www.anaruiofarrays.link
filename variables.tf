@@ -3,12 +3,12 @@ variable "region" {
   default = ""
 }
 
-variable "bucket_web_name" {
+variable "subdomain_web" {
   type = string
   default = ""
 }
 
-variable "bucket_web_redirect_name" {
+variable "domain" {
   type = string
   default = ""
 }
