@@ -12,7 +12,7 @@
             "Resource": "arn:aws:s3:::${var.subdomain_web}/*",
             "Condition": {
                 "StringEquals": {
-                    "AWS:SourceArn": arn
+                    "AWS:SourceArn": ${arn}
                 }
             }
         }
