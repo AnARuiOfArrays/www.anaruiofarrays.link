@@ -5,7 +5,7 @@ provider "aws" {
 
 #Create AWS S3 bucket for website
 resource "aws_s3_bucket" "bucket_web" {
-  bucket = var.bucket_web_name
+  bucket = var.subdomain_web
   #policy = file("bucket_web_policy.json")
   
   cors_rule {
@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "bucket_web" {
 
 #Set ownership controls for web bucket
 resource "aws_s3_bucket_ownership_controls" "bucket_web_ownership" {
-  bucket = aws_s3_bucket.bucket_web.id
+  bucket = aws_s3_bucket.subdomain_web.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -42,19 +42,19 @@ resource "aws_s3_bucket_object" "bucket_web_js" {
   source = "visitor_counter.js"
 }
 
-#Create S3 bucket for web redirect
-resource "aws_s3_bucket" "bucket_web_redirect" {
-  bucket = var.bucket_web_redirect_name
-  #policy = file("bucket_web_redirect_policy.json")
+#Create S3 bucket for domain
+resource "aws_s3_bucket" "bucket_domain" {
+  bucket = var.domain
+  #policy = file("bucket_domain_policy.json")
 
   website {
     redirect_all_requests_to = aws_s3_bucket.bucket_web.id
   }
 }
 
-#Set ownership controls for web redirect bucket
-resource "aws_s3_bucket_ownership_controls" "bucket_web_redirect_ownership" {
-  bucket = aws_s3_bucket.bucket_web_redirect.id
+#Set ownership controls for domain bucket
+resource "aws_s3_bucket_ownership_controls" "bucket_domain_ownership" {
+  bucket = aws_s3_bucket.bucket_domain.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -65,19 +65,19 @@ resource "aws_s3_bucket_ownership_controls" "bucket_web_redirect_ownership" {
 resource "aws_cloudfront_distribution" "bucket_web_distribution" {
   origin {
     domain_name              = aws_s3_bucket.bucket_web.bucket_regional_domain_name
-    origin_id                = var.bucket_web_name
+    origin_id                = var.subdomain_web
   }
 
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
 
-  aliases = [var.bucket_web_name]
+  aliases = [var.subdomain_web]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = var.bucket_web_name
+    target_origin_id = var.subdomain_web
 
     forwarded_values {
       query_string = false
@@ -108,22 +108,22 @@ resource "aws_cloudfront_distribution" "bucket_web_distribution" {
   }
 }
 
-#Create CloudFront distribution for redirect to web
-resource "aws_cloudfront_distribution" "bucket_web_redirect_distribution" {
+#Create CloudFront distribution for domain
+resource "aws_cloudfront_distribution" "bucket_domain_distribution" {
   origin {
-    domain_name              = aws_s3_bucket.bucket_web_redirect.bucket_regional_domain_name
-    origin_id                = var.bucket_web_redirect_name
+    domain_name              = aws_s3_bucket.bucket_domain.bucket_regional_domain_name
+    origin_id                = var.domain
   }
 
   enabled             = true
   is_ipv6_enabled     = true
 
-  aliases = [var.bucket_web_redirect_name]
+  aliases = [var.domain]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = var.bucket_web_redirect_name
+    target_origin_id = var.domain
 
     forwarded_values {
       query_string = false
