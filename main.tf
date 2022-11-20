@@ -45,7 +45,7 @@ resource "aws_s3_bucket_object" "bucket_web_js" {
 #Create S3 bucket for domain
 resource "aws_s3_bucket" "bucket_domain" {
   bucket  = var.domain
-  #policy = file("bucket_domain_policy.json")
+  policy = templatefile("bucket_web_policy.json", {bucket = var.domain})
 
   website {
     redirect_all_requests_to = aws_s3_bucket.bucket_web.id
@@ -55,7 +55,6 @@ resource "aws_s3_bucket" "bucket_domain" {
 #Set ownership controls for domain bucket
 resource "aws_s3_bucket_ownership_controls" "bucket_domain_ownership" {
   bucket = aws_s3_bucket.bucket_domain.id
-  policy = templatefile("bucket_web_policy.json", {bucket = var.domain})
 
   rule {
     object_ownership = "BucketOwnerPreferred"
