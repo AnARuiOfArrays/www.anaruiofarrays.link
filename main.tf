@@ -118,7 +118,7 @@ resource "aws_cloudfront_distribution" "bucket_web_redirect_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
 
-  aliases = [var.bucket_web_name]
+  aliases = [var.bucket_web_redirect_name]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
