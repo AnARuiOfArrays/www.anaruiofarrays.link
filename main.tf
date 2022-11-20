@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "bucket_web" {
 
 #Set ownership controls for web bucket
 resource "aws_s3_bucket_ownership_controls" "bucket_web_ownership" {
-  bucket = aws_s3_bucket.subdomain_web.id
+  bucket = aws_s3_bucket.bucket_web.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
