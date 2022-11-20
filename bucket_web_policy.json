@@ -10,10 +10,6 @@
             },
             "Action": "s3:GetObject",
             "Resource": "arn:aws:s3:::${var.subdomain_web}/*",
-            "Condition": {
-                "StringEquals": {
-                    "AWS:SourceArn": aws_cloudfront_distribution.bucket_web_distribution.arn
-                }
             }
         }
     ]
