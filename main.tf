@@ -164,7 +164,7 @@ resource "aws_route53_record" "record_domain" {
   
   alias {
     name                   = aws_cloudfront_distribution.bucket_domain_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.bucket_domain_distribution.domain_hosted_zone_id
+    zone_id                = aws_cloudfront_distribution.bucket_domain_distribution.hosted_zone_id
     evaluate_target_health = false
   }
 }
@@ -176,7 +176,7 @@ resource "aws_route53_record" "record_subdomain_web" {
   
   alias {
     name                   = aws_cloudfront_distribution.bucket_web_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.bucket_web_distribution.domain_hosted_zone_id
+    zone_id                = aws_cloudfront_distribution.bucket_web_distribution.hosted_zone_id
     evaluate_target_health = false
   }
 }
