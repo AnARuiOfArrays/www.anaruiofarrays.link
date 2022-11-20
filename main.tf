@@ -44,7 +44,7 @@ resource "aws_s3_bucket_object" "bucket_web_js" {
 
 #Create S3 bucket for domain
 resource "aws_s3_bucket" "bucket_domain" {
-  bucket = var.domain
+  bucket  = var.domain
   #policy = file("bucket_domain_policy.json")
 
   website {
@@ -64,8 +64,8 @@ resource "aws_s3_bucket_ownership_controls" "bucket_domain_ownership" {
 #Create CloudFront distribution for web
 resource "aws_cloudfront_distribution" "bucket_web_distribution" {
   origin {
-    domain_name              = aws_s3_bucket.bucket_web.bucket_regional_domain_name
-    origin_id                = var.subdomain_web
+    domain_name = aws_s3_bucket.bucket_web.bucket_regional_domain_name
+    origin_id   = var.subdomain_web
   }
 
   enabled             = true
@@ -102,23 +102,22 @@ resource "aws_cloudfront_distribution" "bucket_web_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = var.acm_certificate_arn
+    acm_certificate_arn      = var.acm_certificate_arn
     minimum_protocol_version = "TLSv1.2_2021"
-    ssl_support_method = "sni-only"
+    ssl_support_method       = "sni-only"
   }
 }
 
 #Create CloudFront distribution for domain
 resource "aws_cloudfront_distribution" "bucket_domain_distribution" {
   origin {
-    domain_name              = aws_s3_bucket.bucket_domain.bucket_regional_domain_name
-    origin_id                = var.domain
+    domain_name = aws_s3_bucket.bucket_domain.bucket_regional_domain_name
+    origin_id   = var.domain
   }
 
-  enabled             = true
-  is_ipv6_enabled     = true
-
-  aliases = [var.domain]
+  enabled         = true
+  is_ipv6_enabled = true
+  aliases         = [var.domain]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
@@ -148,8 +147,36 @@ resource "aws_cloudfront_distribution" "bucket_domain_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = var.acm_certificate_arn
+    acm_certificate_arn      = var.acm_certificate_arn
     minimum_protocol_version = "TLSv1.2_2021"
-    ssl_support_method = "sni-only"
+    ssl_support_method       = "sni-only"
+  }
+}
+
+resource "aws_route53_zone" "primary" {
+  name = var.domain
+}
+
+resource "aws_route53_record" "record_domain" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = var.domain
+  type    = "A"
+  
+  alias {
+    name                   = aws_cloudfront_distribution.bucket_domain_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.bucket_domain_distribution.domain_hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "record_domain" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = var.subdomain_web
+  type    = "A"
+  
+  alias {
+    name                   = aws_cloudfront_distribution.bucket_web_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.bucket_web_distribution.domain_hosted_zone_id
+    evaluate_target_health = false
   }
 }
