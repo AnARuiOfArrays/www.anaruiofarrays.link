@@ -6,7 +6,7 @@ provider "aws" {
 #Create AWS S3 bucket for website
 resource "aws_s3_bucket" "bucket_web" {
   bucket = var.subdomain_web
-  policy = templatefile("bucket_web_policy.json", {arn = aws_cloudfront_distribution.bucket_web_distribution.arn})
+  policy = templatefile("bucket_web_policy.json", {bucket = var.subdomain_web})
   
   cors_rule {
     allowed_methods = ["GET"]
