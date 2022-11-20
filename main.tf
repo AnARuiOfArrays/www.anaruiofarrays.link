@@ -55,6 +55,7 @@ resource "aws_s3_bucket" "bucket_domain" {
 #Set ownership controls for domain bucket
 resource "aws_s3_bucket_ownership_controls" "bucket_domain_ownership" {
   bucket = aws_s3_bucket.bucket_domain.id
+  policy = templatefile("bucket_web_policy.json", {bucket = var.domain})
 
   rule {
     object_ownership = "BucketOwnerPreferred"
