@@ -76,6 +76,10 @@ resource "aws_acm_certificate" "certificate" {
 }
 
 #Configure Route 53
+resource "aws_route53_zone" "primary" {
+  name = var.domain
+}
+
 data "aws_route53_zone" "primary" {
   name         = var.domain
   private_zone = false
@@ -101,10 +105,6 @@ resource "aws_route53_record" "records" {
 resource "aws_acm_certificate_validation" "validation" {
   certificate_arn         = aws_acm_certificate.certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.records : record.fqdn]
-}
-
-resource "aws_route53_zone" "primary" {
-  name = var.domain
 }
   
 #Create CloudFront distribution for web
