@@ -75,14 +75,18 @@ resource "aws_acm_certificate" "certificate" {
   }
 }
 
-#Configure Route 53
+#Create hosted zone
 resource "aws_route53_zone" "primary" {
   name = var.domain
 }
 
+#Validate certificate
 data "aws_route53_zone" "primary" {
   name         = var.domain
   private_zone = false
+  depends_on = [
+    aws_route53_zone.primary
+  ]
 }
 
 resource "aws_route53_record" "records" {
