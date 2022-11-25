@@ -4,7 +4,7 @@ provider "aws" {
 }
 
 #Create AWS S3 bucket for website
-resource "aws_s3_bucket" "bucket_web" {
+resource "aws_s3_bucket" "web" {
   bucket = var.subdomain_web
   policy = templatefile("bucket_web_policy.json", {bucket = var.subdomain_web})
   
@@ -19,8 +19,8 @@ resource "aws_s3_bucket" "bucket_web" {
 }
 
 #Set ownership controls for web bucket
-resource "aws_s3_bucket_ownership_controls" "bucket_web_ownership" {
-  bucket = aws_s3_bucket.bucket_web.id
+resource "aws_s3_bucket_ownership_controls" "web" {
+  bucket = aws_s3_bucket.web.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -28,37 +28,37 @@ resource "aws_s3_bucket_ownership_controls" "bucket_web_ownership" {
 }
 
 #Create website html, css, and js objects in web bucket
-resource "aws_s3_bucket_object" "bucket_web_html" {
-  bucket = aws_s3_bucket.bucket_web.id
+resource "aws_s3_bucket_object" "web_html" {
+  bucket = aws_s3_bucket.web.id
   key    = "index.html"
   source = "index.html"
 }
 
-resource "aws_s3_bucket_object" "bucket_web_css" {
-  bucket = aws_s3_bucket.bucket_web.id
+resource "aws_s3_bucket_object" "web_css" {
+  bucket = aws_s3_bucket.web.id
   key    = "styles.css"
   source = "styles.css"
 }
 
-resource "aws_s3_bucket_object" "bucket_web_js" {
-  bucket = aws_s3_bucket.bucket_web.id
+resource "aws_s3_bucket_object" "web_js" {
+  bucket = aws_s3_bucket.web.id
   key    = "visitor_counter.js"
   source = "visitor_counter.js"
 }
 
 #Create S3 bucket for domain
-resource "aws_s3_bucket" "bucket_domain" {
+resource "aws_s3_bucket" "domain" {
   bucket  = var.domain
   policy = templatefile("bucket_web_policy.json", {bucket = var.domain})
 
   website {
-    redirect_all_requests_to = aws_s3_bucket.bucket_web.id
+    redirect_all_requests_to = aws_s3_bucket.web.id
   }
 }
 
 #Set ownership controls for domain bucket
-resource "aws_s3_bucket_ownership_controls" "bucket_domain_ownership" {
-  bucket = aws_s3_bucket.bucket_domain.id
+resource "aws_s3_bucket_ownership_controls" "domain" {
+  bucket = aws_s3_bucket.domain.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -66,9 +66,9 @@ resource "aws_s3_bucket_ownership_controls" "bucket_domain_ownership" {
 }
 
 #Create CloudFront distribution for web
-resource "aws_cloudfront_distribution" "bucket_web_distribution" {
+resource "aws_cloudfront_distribution" "web" {
   origin {
-    domain_name = aws_s3_bucket.bucket_web.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.web.bucket_regional_domain_name
     origin_id   = var.subdomain_web
   }
 
@@ -113,9 +113,9 @@ resource "aws_cloudfront_distribution" "bucket_web_distribution" {
 }
 
 #Create CloudFront distribution for domain
-resource "aws_cloudfront_distribution" "bucket_domain_distribution" {
+resource "aws_cloudfront_distribution" "domain" {
   origin {
-    domain_name = aws_s3_bucket.bucket_domain.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.domain.bucket_regional_domain_name
     origin_id   = var.domain
   }
 
@@ -161,26 +161,43 @@ resource "aws_route53_zone" "primary" {
   name = var.domain
 }
 
-resource "aws_route53_record" "record_domain" {
+resource "aws_route53_record" "a_domain" {
   zone_id = aws_route53_zone.primary.zone_id
   name    = var.domain
   type    = "A"
   
   alias {
-    name                   = aws_cloudfront_distribution.bucket_domain_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.bucket_domain_distribution.hosted_zone_id
+    name                   = aws_cloudfront_distribution.domain.domain_name
+    zone_id                = aws_cloudfront_distribution.domain.hosted_zone_id
     evaluate_target_health = false
   }
 }
 
-resource "aws_route53_record" "record_subdomain_web" {
+resource "aws_route53_record" "a_web" {
   zone_id = aws_route53_zone.primary.zone_id
   name    = var.subdomain_web
   type    = "A"
   
   alias {
-    name                   = aws_cloudfront_distribution.bucket_web_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.bucket_web_distribution.hosted_zone_id
+    name                   = aws_cloudfront_distribution.web.domain_name
+    zone_id                = aws_cloudfront_distribution.web.hosted_zone_id
     evaluate_target_health = false
   }
+}
+
+resource "aws_route53_record" "domain_validation" {
+  for_each = {
+    for option in aws_acm_certificate.ssl_certificate.domain_validation_options : option.domain_name => {
+      name   = option.resource_record_name
+      record = option.resource_record_value
+      type   = option.resource_record_type
+    }
+  }
+
+  name    = each.value.name
+  type    = each.value.type
+  zone_id = aws_route53_zone.main.id
+  records = [each.value.record]
+  ttl     = 60
+
 }
