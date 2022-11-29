@@ -1,6 +1,5 @@
 #Set provider as AWS
 provider "aws" {
-  version = "~> 4.0"
   region  = var.region
 }
 
@@ -111,27 +110,6 @@ resource "aws_route53_record" "records" {
 resource "aws_acm_certificate_validation" "validation" {
   certificate_arn         = aws_acm_certificate.certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.records : record.fqdn]
-}
-  
-#Point domain to generated name servers
-resource "aws_route53domains_registered_domain" "primary" {
-  domain_name = var.domain
-
-  name_server {
-    name = aws_route53_zone.primary.name_servers[0]
-  }
-
-  name_server {
-    name = aws_route53_zone.primary.name_servers[1]
-  }
-  
-    name_server {
-    name = aws_route53_zone.primary.name_servers[2]
-  }
-  
-    name_server {
-    name = aws_route53_zone.primary.name_servers[3]
-  }
 }
   
 #Create CloudFront distribution for web
