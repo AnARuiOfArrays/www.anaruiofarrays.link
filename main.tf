@@ -4,12 +4,9 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.0"
+      region  = var.region
     }
   }
-}
-
-provider "aws" {
-  region = var.region
 }
 
 #Create AWS S3 bucket for website
