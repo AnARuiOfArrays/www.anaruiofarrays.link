@@ -68,7 +68,7 @@ resource "aws_s3_bucket_ownership_controls" "domain" {
 #Create ACM certificate 
 resource "aws_acm_certificate" "certificate" {
   domain_name       = var.domain
-  subject_alternative_names = [var.web_domain]
+  subject_alternative_names = ["www.${var.domain_name}"]
   validation_method = "DNS"
 
   lifecycle {
