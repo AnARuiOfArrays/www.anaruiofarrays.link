@@ -68,6 +68,7 @@ resource "aws_s3_bucket_ownership_controls" "domain" {
 #Create ACM certificate 
 resource "aws_acm_certificate" "certificate" {
   domain_name       = var.domain
+  subject_alternative_names = [var.web_domain]
   validation_method = "DNS"
 
   lifecycle {
@@ -80,13 +81,36 @@ resource "aws_route53_zone" "primary" {
   name = var.domain
 }
 
+#Create A records
+resource "aws_route53_record" "a_domain" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = var.domain
+  type    = "A"
+  
+  alias {
+    name                   = aws_cloudfront_distribution.domain.domain_name
+    zone_id                = aws_cloudfront_distribution.domain.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "a_web" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = var.subdomain_web
+  type    = "A"
+  
+  alias {
+    name                   = aws_cloudfront_distribution.web.domain_name
+    zone_id                = aws_cloudfront_distribution.web.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
 #Validate certificate
 data "aws_route53_zone" "primary" {
   name         = var.domain
   private_zone = false
-  depends_on   = [
-    aws_route53_zone.primary
-  ]
+  depends_on   = [aws_route53_zone.primary]
 }
 
 #Create records
@@ -201,29 +225,5 @@ resource "aws_cloudfront_distribution" "domain" {
     acm_certificate_arn      = aws_acm_certificate.certificate.arn
     minimum_protocol_version = "TLSv1.2_2021"
     ssl_support_method       = "sni-only"
-  }
-}
-
-resource "aws_route53_record" "a_domain" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = var.domain
-  type    = "A"
-  
-  alias {
-    name                   = aws_cloudfront_distribution.domain.domain_name
-    zone_id                = aws_cloudfront_distribution.domain.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
-resource "aws_route53_record" "a_web" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = var.subdomain_web
-  type    = "A"
-  
-  alias {
-    name                   = aws_cloudfront_distribution.web.domain_name
-    zone_id                = aws_cloudfront_distribution.web.hosted_zone_id
-    evaluate_target_health = false
   }
 }
