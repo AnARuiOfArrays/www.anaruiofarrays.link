@@ -29,21 +29,24 @@ resource "aws_s3_bucket_ownership_controls" "web" {
 
 #Create website html, css, and js objects in web bucket
 resource "aws_s3_bucket_object" "web_html" {
-  bucket = aws_s3_bucket.web.id
-  key    = "index.html"
-  source = "index.html"
+  bucket       = aws_s3_bucket.web.id
+  key          = "index.html"
+  source       = "index.html"
+  content_type = "text/html"
 }
 
 resource "aws_s3_bucket_object" "web_css" {
-  bucket = aws_s3_bucket.web.id
-  key    = "styles.css"
-  source = "styles.css"
+  bucket       = aws_s3_bucket.web.id
+  key          = "styles.css"
+  source       = "styles.css"
+  content_type = "text/css"
 }
 
 resource "aws_s3_bucket_object" "web_js" {
-  bucket = aws_s3_bucket.web.id
-  key    = "visitor_counter.js"
-  source = "visitor_counter.js"
+  bucket       = aws_s3_bucket.web.id
+  key          = "visitor_counter.js"
+  source       = "visitor_counter.js"
+  content_type = "text/javascript"
 }
 
 #Create S3 bucket for domain
