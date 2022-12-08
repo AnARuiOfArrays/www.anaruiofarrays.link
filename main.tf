@@ -142,7 +142,7 @@ resource "aws_acm_certificate_validation" "validation" {
 #Create CloudFront distribution for web
 resource "aws_cloudfront_distribution" "web" {
   origin {
-    domain_name = aws_s3_bucket.web.website_endpoint
+    domain_name = aws_s3_bucket.web.bucket_regional_domain_name
     origin_id   = var.subdomain_web
   }
 
@@ -189,7 +189,7 @@ resource "aws_cloudfront_distribution" "web" {
 #Create CloudFront distribution for domain
 resource "aws_cloudfront_distribution" "domain" {
   origin {
-    domain_name = aws_s3_bucket.domain.website_endpoint
+    domain_name = aws_s3_bucket.domain.bucket_regional_domain_name
     origin_id   = var.domain
   }
 
