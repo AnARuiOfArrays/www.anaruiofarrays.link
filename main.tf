@@ -55,7 +55,7 @@ resource "aws_s3_bucket" "domain" {
   policy = templatefile("bucket_web_policy.json", {bucket = var.domain})
 
   website {
-    redirect_all_requests_to = "https://${var.subdomain_web}"
+    redirect_all_requests_to = aws_s3_bucket.web.bucket_regional_domain_name
   }
 }
 
