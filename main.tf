@@ -8,14 +8,9 @@ resource "aws_s3_bucket" "web" {
   bucket = var.subdomain_web
   policy = templatefile("bucket_web_policy.json", {bucket = var.subdomain_web})
   
-  cors_rule {
-    allowed_methods = ["GET"]
-    allowed_origins = ["*"]
+  website {
+    redirect_all_requests_to = aws_s3_bucket.web.bucket_regional_domain_name
   }
-  
-    website {
-    index_document = "index.html"
-    }
 }
 
 #Set ownership controls for web bucket
@@ -29,21 +24,21 @@ resource "aws_s3_bucket_ownership_controls" "web" {
 
 #Create website html, css, and js objects in web bucket
 resource "aws_s3_bucket_object" "web_html" {
-  bucket       = aws_s3_bucket.web.id
+  bucket       = aws_s3_bucket.domain.id
   key          = "index.html"
   source       = "index.html"
   content_type = "text/html"
 }
 
 resource "aws_s3_bucket_object" "web_css" {
-  bucket       = aws_s3_bucket.web.id
+  bucket       = aws_s3_bucket.domain.id
   key          = "styles.css"
   source       = "styles.css"
   content_type = "text/css"
 }
 
 resource "aws_s3_bucket_object" "web_js" {
-  bucket       = aws_s3_bucket.web.id
+  bucket       = aws_s3_bucket.domain.id
   key          = "visitor_counter.js"
   source       = "visitor_counter.js"
   content_type = "text/javascript"
@@ -54,9 +49,14 @@ resource "aws_s3_bucket" "domain" {
   bucket  = var.domain
   policy = templatefile("bucket_web_policy.json", {bucket = var.domain})
 
-  website {
-    redirect_all_requests_to = aws_s3_bucket.web.bucket_regional_domain_name
+  cors_rule {
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
   }
+  
+    website {
+    index_document = "index.html"
+    }
 }
 
 #Set ownership controls for domain bucket
