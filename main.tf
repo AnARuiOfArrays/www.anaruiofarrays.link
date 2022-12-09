@@ -148,7 +148,6 @@ resource "aws_cloudfront_distribution" "web" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  default_root_object = "index.html"
 
   aliases = [var.subdomain_web]
 
@@ -195,6 +194,7 @@ resource "aws_cloudfront_distribution" "domain" {
 
   enabled         = true
   is_ipv6_enabled = true
+  default_root_object = "index.html"
   aliases         = [var.domain]
 
   default_cache_behavior {
