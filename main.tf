@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "web" {
   policy = templatefile("bucket_web_policy.json", {bucket = var.subdomain_web})
   
   website {
-    redirect_all_requests_to = aws_s3_bucket.web.bucket_regional_domain_name
+    redirect_all_requests_to = aws_s3_bucket.domain.bucket_regional_domain_name
   }
 }
 
